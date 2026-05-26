@@ -15,11 +15,13 @@ async function globalSetup() {
     `${process.env.WEB_URL}/auth/login`,
 
     {
-      waitUntil: "networkidle",
+      waitUntil: "domcontentloaded",
     },
   );
 
-  await page.locator('[data-test="email"]').waitFor();
+  await page.locator('[data-test="email"]').toBeVisible({
+    timeout: 30000,
+  });
 
   await page.locator('[data-test="email"]').fill(ENV.practiceTesting.email);
 
