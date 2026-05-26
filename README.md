@@ -2,31 +2,59 @@
 
 <div align="center">
 
-# Playwright Hybrid Automation Framework
+<h1>Playwright Hybrid Automation Framework</h1>
 
-A production-grade **Hybrid Test Automation Framework** built using **Playwright + JavaScript (ES Modules)** for scalable **UI**, **API**, and **Hybrid automation testing** with modern CI/CD practices.
+<p>
+Production-grade <b>Hybrid Test Automation Framework</b> built using
+<b>Playwright + JavaScript (ES Modules)</b>
+for scalable <b>UI</b>, <b>API</b>, and
+<b>Hybrid automation testing</b>.
+</p>
 
-Designed with enterprise-level framework principles including **Page Object Model (POM)**, **Service Layer Architecture**, **Environment Configuration**, **API Mocking**, **Reusable Fixtures**, and **GitHub Actions CI/CD**.
+<p>
+Designed using enterprise-level architecture with
+<b>Page Object Model (POM)</b>,
+<b>Service Layer Architecture</b>,
+<b>Reusable Fixtures</b>,
+<b>Environment Configuration</b>,
+<b>API Mocking</b>,
+and <b>GitHub Actions CI/CD</b>.
+</p>
 
 <br>
 
 [![Playwright Tests](https://github.com/TryHardPranjal/Playwright-Hybrid-Automation-Framework/actions/workflows/playwright.yml/badge.svg)](https://github.com/TryHardPranjal/Playwright-Hybrid-Automation-Framework/actions/workflows/playwright.yml)
 
 ![Playwright](https://img.shields.io/badge/Playwright-Automation-green)
-
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow)
-
 ![NodeJS](https://img.shields.io/badge/Node.js-Runtime-brightgreen)
-
 ![Allure](https://img.shields.io/badge/Allure-Reporting-orange)
-
 ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI/CD-blue)
-
+![Cross Browser](https://img.shields.io/badge/CrossBrowser-Chromium%20%7C%20Firefox%20%7C%20WebKit-success)
 ![License](https://img.shields.io/badge/License-ISC-red)
-
 ![Status](https://img.shields.io/badge/Status-Active-success)
 
+<br><br>
+
+### UI • API • Hybrid • CI/CD • Reporting
+Version: v1.0.0
+
 </div>
+
+---
+
+## Framework Highlights
+
+- Hybrid UI + API automation framework
+- Enterprise-style Page Object Model architecture
+- Service Layer abstraction
+- Environment-driven execution
+- API authentication with reusable auth helpers
+- Cross-browser support (Chromium, Firefox, WebKit)
+- GitHub Actions CI/CD pipeline
+- Hosted Allure reporting via GitHub Pages
+- Parallel execution support
+- Production-style artifact handling
 
 ---
 
@@ -48,15 +76,15 @@ Designed with enterprise-level framework principles including **Page Object Mode
 
 ## Live Report
 
-Live Allure Report:
+Latest hosted Allure report:
 
-https://tryhardpranjal.github.io/Playwright-Hybrid-Automation-Framework/
+[View Allure Report](https://tryhardpranjal.github.io/Playwright-Hybrid-Automation-Framework/)
 
 ---
 
 ## Why This Framework?
 
-This project is designed to simulate a **real-world enterprise automation framework** rather than a simple test repository.
+This project simulates a **real-world enterprise automation framework** rather than a basic automation repository.
 
 The framework demonstrates:
 
@@ -66,7 +94,7 @@ The framework demonstrates:
 - Professional CI/CD practices
 - Hybrid testing techniques
 - Debugging and reporting strategies
-- Portfolio-ready implementation for SDET/QA roles
+- Portfolio-ready implementation demonstrating real-world SDET and QA engineering practices
 
 ---
 
@@ -152,13 +180,19 @@ The framework is structured to be readable, reusable, and easy to extend.
 The framework follows a layered design:
 
 ```text
-Tests
-↓
-Services
-↓
-Pages
-↓
-Playwright
+                    Playwright Hybrid Automation Framework
+
+                           Tests / Specs Layer
+                                      ↓
+                             Service Layer
+                                      ↓
+                            Page Object Layer
+                                      ↓
+                           API Utility Layer
+                                      ↓
+                        Playwright Core Engine
+                                      ↓
+                Browser | API | MockAPI | Environment
 ```
 
 ### What Each Layer Does
@@ -169,6 +203,22 @@ Playwright
 - **Utils**: contain logging, random data, retry, and helper utilities
 - **Config**: manages environments, URLs, and environment loading
 - **API Utils**: manage reusable request/response handling
+
+---
+
+## Screenshots
+
+### GitHub Actions Workflow
+
+![Workflow](docs/workflow.png)
+
+### Allure Dashboard
+
+![Allure Report](docs/allure-dashboard.png)
+
+### Project Structure
+
+![Framework Structure](docs/framework-structure.png)
 
 ---
 
@@ -453,6 +503,23 @@ The hosted report is used to review:
 
 ## CI/CD Workflow
 
+```text
+Push to main
+        ↓
+Install Dependencies
+        ↓
+Generate Auth State
+        ↓
+Run Chromium UI + Hybrid Tests
+        ↓
+Run API Tests
+        ↓
+Generate Allure Report
+        ↓
+Upload Debug Artifacts
+        ↓
+Deploy Latest Report to GitHub Pages
+```
 The GitHub Actions workflow is located at:
 
 ```text
@@ -593,6 +660,29 @@ This framework demonstrates:
 - parallel execution
 - GitHub Actions CI/CD
 - Allure report hosting on GitHub Pages
+
+---
+
+## Skills Demonstrated
+
+- Test Automation Framework Design
+- Playwright Automation
+- API Testing
+- Hybrid Testing
+- JavaScript ES Modules
+- CI/CD with GitHub Actions
+- Reporting with Allure
+- Authentication Strategies
+- Cross-browser Automation
+- Environment Configuration
+- Debugging & Logging
+- Test Framework Architecture
+
+---
+
+## Notes
+
+This repository was built as a portfolio-quality framework focused on demonstrating scalable automation architecture and professional engineering practices.
 
 ---
 
