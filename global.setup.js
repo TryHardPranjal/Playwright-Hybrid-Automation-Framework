@@ -1,108 +1,65 @@
-import { request } from "@playwright/test";
-
+import { chromium, expect } from "@playwright/test";
+import { ENV } from "./config/env.js";
 import Logger from "./utils/Logger.js";
 
 async function globalSetup() {
+  const browser = await chromium.launch({
+    headless: true,
+  });
 
-  const requestContext =
+  const page = await browser.newPage();
 
-    await request.newContext();
+  const baseUrl = process.env.WEB_URL;
 
-  const loginResponse =
+  Logger.info("WEB_URL", baseUrl);
 
-    await requestContext.post(
-
-      "https://api.practicesoftwaretesting.com/users/login",
-
-      {
-
-        data: {
-
-          email:
-            process.env.PST_EMAIL,
-
-          password:
-            process.env.PST_PASSWORD
-
-        }
-
-      }
-
-    );
-
-  if (
-    loginResponse.status() !== 200
-  ) {
-
-    throw new Error(
-
-      `Login failed: ${loginResponse.status()}`
-
-    );
-
+  if (!baseUrl) {
+    throw new Error("WEB_URL is undefined");
   }
 
-  const body =
+  await page.goto(
+    `${baseUrl}/auth/login`,
 
-    await loginResponse.json();
-
-  const token =
-    body.access_token;
-
-  Logger.info(
-    "Token generated"
+    {
+      waitUntil: "domcontentloaded",
+      timeout: 60000,
+    },
   );
 
-  const storageState = {
+  Logger.info("Current URL", page.url());
 
-    cookies: [],
+  await page.screenshot({
+    path: "setup-page.png",
+  });
 
-    origins: [
+  await page.waitForSelector(
+    '[data-test="email"]',
 
-      {
-
-        origin:
-
-        process.env.WEB_URL,
-
-        localStorage: [
-
-          {
-
-            name:
-              "auth-token",
-
-            value:
-              token
-
-          }
-
-        ]
-
-      }
-
-    ]
-
-  };
-
-  const fs = await import("fs");
-
-  fs.writeFileSync(
-
-    "./.auth/user.json",
-
-    JSON.stringify(
-      storageState,
-      null,
-      2
-    )
-
+    {
+      state: "visible",
+      timeout: 60000,
+    },
   );
 
-  Logger.info(
-    "Auth state saved successfully"
-  );
+  await page.locator('[data-test="email"]').fill(ENV.practiceTesting.email);
 
+  await page
+    .locator('[data-test="password"]')
+    .fill(ENV.practiceTesting.password);
+
+  await page.locator('[data-test="login-submit"]').click();
+
+  await expect(page.locator('[data-test="nav-menu"]')).toBeVisible({
+    timeout: 60000,
+  });
+
+  await page.context().storageState({
+    path: "./.auth/user.json",
+  });
+
+  Logger.info("Auth state saved successfully");
+
+  await browser.close();
 }
 
 export default globalSetup;
