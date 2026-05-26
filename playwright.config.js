@@ -1,148 +1,117 @@
 // @ts-check
 
-import 'dotenv/config';
+import "dotenv/config";
+import { defineConfig, devices } from "@playwright/test";
 
-import {
-  defineConfig,
-  devices
-} from '@playwright/test';
-
-import { ENV }
-  from './config/env.js';
+import { ENV } from "./config/env.js";
+import "./config/loadEnv.js";
 
 export default defineConfig({
+  globalSetup: "./global.setup.js",
 
-  testDir: './tests',
+  testDir: "./tests",
 
   fullyParallel: true,
 
-  forbidOnly:
-    !!process.env.CI,
+  forbidOnly: !!process.env.CI,
 
-  retries:
-    process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 2 : 0,
 
-  workers:
-    process.env.CI ? 1 : 1,
+  workers: process.env.CI ? 2 : undefined,
 
   timeout: 90000,
 
   reporter: [
+    ["list"],
 
-    ['list'],
+    [
+      "html",
+      {
+        open: "never",
+      },
+    ],
 
-    ['html', {
-      open: 'never'
-    }],
-
-    ['allure-playwright']
-
+    ["allure-playwright"],
   ],
 
   use: {
-
-    headless:
-      process.env.CI ? true : false,
+    headless: process.env.CI ? true : true,
 
     viewport: {
       width: 1280,
-      height: 720
+      height: 720,
     },
 
     actionTimeout: 30000,
 
     navigationTimeout: 30000,
 
-    trace:
-      'on-first-retry',
+    trace: "on-first-retry",
 
-    screenshot:
-      'only-on-failure',
+    screenshot: "only-on-failure",
 
-    video:
-      'retain-on-failure'
-
+    video: "retain-on-failure",
   },
 
   expect: {
-    timeout: 15000
+    timeout: 15000,
   },
 
   projects: [
-
     {
-      name: 'chromium',
+      name: "chromium",
 
-      testIgnore: [
-        '**/*.api.spec.js'
-      ],
+      testIgnore: ["**/*.api.spec.js"],
 
       use: {
+        ...devices["Desktop Chrome"],
 
-        ...devices['Desktop Chrome'],
+        baseURL: process.env.WEB_URL,
 
-        baseURL:
-          'https://www.amazon.in'
-
-      }
+        storageState: "./.auth/user.json",
+      },
     },
 
-    // {
-    //   name: 'firefox',
-
-    //   testIgnore: [
-    //     '**/*.api.spec.js'
-    //   ],
-
-    //   use: {
-
-    //     ...devices['Desktop Firefox'],
-
-    //     baseURL:
-    //       'https://www.amazon.in'
-
-    //   }
-    // },
-
-    // {
-    //   name: 'webkit',
-
-    //   testIgnore: [
-    //     '**/*.api.spec.js'
-    //   ],
-
-    //   use: {
-
-    //     ...devices['Desktop Safari'],
-
-    //     baseURL:
-    //       'https://www.amazon.in'
-
-    //   }
-    // },
-
     {
-      name: 'api',
+      name: "firefox",
 
-      testMatch: [
-        '**/*.api.spec.js'
-      ],
+      testIgnore: ["**/*.api.spec.js"],
 
       use: {
+        ...devices["Desktop Firefox"],
 
-        baseURL:
-          'https://reqres.in',
+        baseURL: process.env.WEB_URL,
+
+        storageState: "./.auth/user.json",
+      },
+    },
+
+    {
+      name: "webkit",
+
+      testIgnore: ["**/*.api.spec.js"],
+
+      use: {
+        ...devices["Desktop Safari"],
+
+        baseURL: process.env.WEB_URL,
+
+        storageState: "./.auth/user.json",
+      },
+    },
+
+    {
+      name: "api",
+
+      testMatch: ["**/*.api.spec.js"],
+
+      use: {
+        baseURL: process.env.API_URL,
 
         extraHTTPHeaders: {
-
-          'x-api-key':
-            ENV.reqres.apiKey
-
-        }
-
-      }
-    }
-
-  ]
-
+          "x-api-key": ENV.reqres.apiKey,
+        },
+      },
+    },
+  ],
 });

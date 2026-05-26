@@ -1,92 +1,88 @@
-import { test, expect } from '@playwright/test';
-import APIClient from '../../api-utils/apiClient.js';
-import userPayload from '../../payloads/mockApiUserPayload.json' assert { type: 'json' };
-import { ENV } from '../../config/env.js';
+import { test, expect } from "@playwright/test";
+import APIClient from "../../api-utils/apiClient.js";
+import userPayload from "../../payloads/mockApiUserPayload.json" assert { type: "json" };
+import { ENV } from "../../config/env.js";
+import Logger from "../../utils/Logger.js";
+import RandomData from "../../utils/RandomData.js";
 
-test.describe('MockAPI CRUD Flow', () => {
+test.describe("MockAPI CRUD Flow", () => {
+  test("@e2e Full CRUD User Flow", async ({ request }) => {
+    const apiClient = new APIClient(request);
+    const baseURL = ENV.mockapi.baseURL;
+    const dynamicPayload = {
+      ...userPayload,
 
-    test('@e2e Full CRUD User Flow', async ({ request }) => {
+      name: RandomData.getRandomName(),
 
-        const apiClient = new APIClient(request);
-        const baseURL = ENV.mockapi.baseURL;
+      email: RandomData.getRandomEmail(),
+    };
 
-        console.log('\nCreate User Payload:');
-        console.log(userPayload);
+    Logger.info("\nCreate User Payload:", dynamicPayload);
 
-        // Create user
+    // Create user
 
-        const createResponse = await apiClient.post(
-            `${baseURL}/users`,
-            userPayload
-        );
+    const createResponse = await apiClient.post(
+      `${baseURL}/users`,
+      dynamicPayload,
+    );
 
-        expect(createResponse.status()).toBe(201);
-        expect(createResponse.ok()).toBeTruthy();
-        const createBody = await createResponse.json();
-        console.log('\nCreated User Response:');
-        console.log(createBody);
+    expect(createResponse.status()).toBe(201);
+    expect(createResponse.ok()).toBeTruthy();
+    const createBody = await createResponse.json();
+    Logger.info("\nCreated User Response:", createBody);
 
-        expect(createBody.name).toBe(userPayload.name);
-        expect(createBody.job).toBe(userPayload.job);
-        expect(createBody).toHaveProperty('id');
-        const userId = createBody.id;
+    expect(createBody.name).toBe(dynamicPayload.name);
+    expect(createBody.job).toBe(dynamicPayload.job);
+    expect(createBody).toHaveProperty("id");
+    const userId = createBody.id;
 
-        // Get created user
+    // Get created user
 
-        const getUserResponse = await apiClient.get(
-            `${baseURL}/users/${userId}`
-        );
+    const getUserResponse = await apiClient.get(`${baseURL}/users/${userId}`);
 
-        expect(getUserResponse.status()).toBe(200);
-        expect(getUserResponse.ok()).toBeTruthy();
-        const getUserBody = await getUserResponse.json();
-        console.log('\nFetched User Response:');
-        console.log(getUserBody);
+    expect(getUserResponse.status()).toBe(200);
+    expect(getUserResponse.ok()).toBeTruthy();
+    const getUserBody = await getUserResponse.json();
+    Logger.info("\nFetched User Response:", getUserBody);
 
-        expect(getUserBody.name).toBe(userPayload.name);
-        expect(getUserBody.job).toBe(userPayload.job);
+    expect(getUserBody.name).toBe(dynamicPayload.name);
+    expect(getUserBody.job).toBe(dynamicPayload.job);
 
-        // Update user
+    // Update user
 
-        const updatedPayload = {
-            ...userPayload,
-            job: 'Senior QA Engineer'
-        };
+    const updatedPayload = {
+      ...dynamicPayload,
+      job: "Senior QA Engineer",
+    };
 
-        console.log('\nUpdated Payload:');
-        console.log(updatedPayload);
+    Logger.info("\nUpdated Payload:", updatedPayload);
 
-        const updateResponse = await apiClient.put(
-            `${baseURL}/users/${userId}`,
-            updatedPayload
-        );
+    const updateResponse = await apiClient.put(
+      `${baseURL}/users/${userId}`,
+      updatedPayload,
+    );
 
-        expect(updateResponse.status()).toBe(200);
-        expect(updateResponse.ok()).toBeTruthy();
-        const updateBody = await updateResponse.json();
-        console.log('\nUpdated User Response:');
-        console.log(updateBody);
+    expect(updateResponse.status()).toBe(200);
+    expect(updateResponse.ok()).toBeTruthy();
+    const updateBody = await updateResponse.json();
+    Logger.info("\nUpdated User Response:", updateBody);
 
-        expect(updateBody.job).toBe('Senior QA Engineer');
+    expect(updateBody.job).toBe("Senior QA Engineer");
 
-        // Delete user
+    // Delete user
 
-        const deleteResponse = await apiClient.delete(
-            `${baseURL}/users/${userId}`
-        );
+    const deleteResponse = await apiClient.delete(`${baseURL}/users/${userId}`);
 
-        expect(deleteResponse.status()).toBe(200);
-        console.log('\nUser Deleted Successfully');
+    expect(deleteResponse.status()).toBe(200);
+    Logger.info("\nUser Deleted Successfully");
 
-        // Validate deleted user
+    // Validate deleted user
 
-        const deletedUserResponse = await apiClient.get(
-            `${baseURL}/users/${userId}`
-        );
+    const deletedUserResponse = await apiClient.get(
+      `${baseURL}/users/${userId}`,
+    );
 
-        expect(deletedUserResponse.status()).toBe(404);
-        console.log('\nDeleted User Validation Passed');
-
-    });
-
+    expect(deletedUserResponse.status()).toBe(404);
+    Logger.info("\nDeleted User Validation Passed");
+  });
 });

@@ -3,63 +3,41 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-
   "scripts": {
-
-  "clean":
-    "rimraf allure-results allure-report playwright-report test-results",
-
-  "test":
-    "npm run clean && playwright test",
-
-  "test:ui":
-    "npm run clean && playwright test --project=webkit",
-
-  "test:api":
-    "npm run clean && playwright test --project=api",
-
-  "test:smoke":
-    "npm run clean && playwright test --grep @smoke",
-
-  "test:regression":
-    "npm run clean && playwright test --grep @regression",
-
-  "test:sanity":
-    "npm run clean && playwright test --grep @sanity",
-
-  "test:e2e":
-    "npm run clean && playwright test --grep @e2e",
-
-  "test:ci":
-    "playwright test",
-
-  "allure:generate":
-    "allure generate allure-results --clean",
-
-  "allure:open":
-    "allure open",
-
-  "allure":
-    "npm run allure:generate && npm run allure:open",
-
-  "test:allure":
-    "npm run test && npm run allure"
-
-},
-
+    "clean": "rimraf allure-results allure-report playwright-report test-results",
+    "test": "npm run clean && playwright test",
+    "test:ui": "npm run clean && playwright test --project=chromium",
+    "test:api": "npm run clean && playwright test --project=api",
+    "test:hybrid": "npm run clean && playwright test tests/hybrid",
+    "test:chrome": "npm run clean && playwright test --project=chromium",
+    "test:firefox": "npm run clean && playwright test --project=firefox",
+    "test:safari": "npm run clean && playwright test --project=webkit",
+    "test:crossbrowser": "npm run clean && playwright test --project=chromium --project=firefox --project=webkit",
+    "test:smoke": "npm run clean && playwright test --grep @smoke",
+    "test:regression": "npm run clean && playwright test --grep @regression",
+    "test:sanity": "npm run clean && playwright test --grep @sanity",
+    "test:e2e": "npm run clean && playwright test --grep @e2e",
+    "test:dev": "cross-env TEST_ENV=dev playwright test",
+    "test:qa": "cross-env TEST_ENV=qa playwright test",
+    "test:stage": "cross-env TEST_ENV=stage playwright test",
+    "test:ci": "playwright test",
+    "allure:generate": "allure generate allure-results --clean",
+    "allure:open": "allure open",
+    "allure": "npm run allure:generate && npm run allure:open",
+    "test:allure": "npm run test && npm run allure"
+  },
   "keywords": [],
   "author": "Pranjal Sinha",
   "license": "ISC",
   "type": "module",
-
   "devDependencies": {
     "@playwright/test": "^1.59.1",
     "@types/node": "^25.6.0",
     "allure-commandline": "^2.40.0",
     "allure-playwright": "^3.7.2",
+    "cross-env": "^10.1.0",
     "rimraf": "^6.1.3"
   },
-
   "dependencies": {
     "dotenv": "^17.4.2"
   }

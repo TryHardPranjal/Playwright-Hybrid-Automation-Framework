@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import Logger from '../../utils/Logger.js';
 
 test.describe('Valid And Invalid Response Testing', () => {
 
@@ -19,8 +20,7 @@ test.describe('Valid And Invalid Response Testing', () => {
         expect(emptyPayloadResponse.ok()).toBeFalsy();
         const emptyPayloadBody = await emptyPayloadResponse.json();
 
-        console.log('\nEmpty Payload Response:');
-        console.log(emptyPayloadBody);
+        Logger.info('\nEmpty Payload Response:', emptyPayloadBody);
         expect(emptyPayloadBody.error).toBe('Missing email or username');
 
         expect(
@@ -35,8 +35,7 @@ test.describe('Valid And Invalid Response Testing', () => {
             password: null
         };
 
-        console.log('\nNull Payload:');
-        console.log(nullPayload);
+        Logger.info('\nNull Payload:', nullPayload);
 
         const nullPayloadResponse = await request.post(
             '/api/login',
@@ -49,8 +48,7 @@ test.describe('Valid And Invalid Response Testing', () => {
         expect(nullPayloadResponse.ok()).toBeFalsy();
         const nullPayloadBody = await nullPayloadResponse.json();
 
-        console.log('\nNull Payload Response:');
-        console.log(nullPayloadBody);
+        Logger.info('\nNull Payload Response:', nullPayloadBody);
         expect(nullPayloadBody.error).toBeTruthy();
 
         expect(
@@ -67,8 +65,7 @@ test.describe('Valid And Invalid Response Testing', () => {
 
         };
 
-        console.log('\nInvalid Email Payload:');
-        console.log(invalidEmailPayload);
+        Logger.info('\nInvalid Email Payload:', invalidEmailPayload);
 
         const invalidEmailResponse = await request.post(
             '/api/login',
@@ -81,8 +78,7 @@ test.describe('Valid And Invalid Response Testing', () => {
         expect(invalidEmailResponse.ok()).toBeFalsy();
         const invalidEmailBody = await invalidEmailResponse.json();
 
-        console.log('\nInvalid Email Response:');
-        console.log(invalidEmailBody);
+        Logger.info('\nInvalid Email Response:', invalidEmailBody);
 
         expect(invalidEmailBody.error).toBeTruthy();
         expect(
@@ -98,8 +94,7 @@ test.describe('Valid And Invalid Response Testing', () => {
         'eve.holt@reqres.in'
     };
 
-    console.log('\nMissing Password Payload:');
-    console.log(missingPasswordPayload);
+    Logger.info('\nMissing Password Payload:', missingPasswordPayload);
 
     const missingPasswordResponse =
       await request.post(
@@ -114,8 +109,7 @@ test.describe('Valid And Invalid Response Testing', () => {
     expect(missingPasswordResponse.ok()).toBeFalsy();
     const missingPasswordBody =await missingPasswordResponse.json();
 
-    console.log('\nMissing Password Response:');
-    console.log(missingPasswordBody);
+    Logger.info('\nMissing Password Response:', missingPasswordBody);
 
     expect(missingPasswordBody.error).toBeTruthy();
     expect(missingPasswordBody.error).toBe('Missing password');
@@ -130,8 +124,7 @@ test.describe('Valid And Invalid Response Testing', () => {
             password: 'cityslicka'
         };
 
-        console.log('\nValid Login Payload:');
-        console.log(validLoginPayload);
+        Logger.info('\nValid Login Payload:', validLoginPayload);
 
         const validLoginResponse = await request.post(
             '/api/login',
@@ -144,8 +137,7 @@ test.describe('Valid And Invalid Response Testing', () => {
         expect(validLoginResponse.ok()).toBeTruthy();
         const validResponseBody = await validLoginResponse.json();
 
-        console.log('\nValid Login Response:');
-        console.log(validResponseBody);
+        Logger.info('\nValid Login Response:', validResponseBody);
 
         expect(validResponseBody).toHaveProperty('token');
         expect(validResponseBody.token).toBeTruthy();

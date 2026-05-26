@@ -1,158 +1,76 @@
-import { expect } from '@playwright/test';
+import { expect } from "@playwright/test";
 
 const selectors = {
-
-  text: {
-    items: '.sc-list-item',
-    productTitle: '.sc-product-title',
-    productPrice: '.sc-product-price',
-    itemCount: '#sc-subtotal-label-activecart',
-    subtotal: '#sc-subtotal-amount-activecart'
+  cart: {
+    addButton: '[data-test="add-to-cart"]',
+    openButton: '[data-test="nav-cart"]',
+    productName: '[data-test="product-title"]',
+    checkoutButton: '[data-test="proceed-1"]',
+    continueButton: '[data-test="proceed-2"]',
+    emptyCartMessage: '[data-test="no-rows-message"]',
+    deleteToast: '[role="alert"]',
+    removeButton: "a.btn.btn-danger",
+    productRow: "tr",
   },
-
-  button: {
-    delete: 'input[value="Delete"]',
-    goToCart: '#sw-gtc a:has-text("Go to Cart")',
-    cartIcon: '#nav-cart'
-  }
 };
 
 class CartPage {
-
   constructor(page) {
     this.page = page;
   }
 
-  // Open cart from add-to-cart popup or header cart icon
+  async addProductToCart() {
+    await this.page.locator(selectors.cart.addButton).click();
+  }
+
   async openCart() {
-
-    const goToCart = this.page.locator(
-      selectors.button.goToCart
-    );
-
-    // small wait to behave more like real user
-    await this.page.waitForTimeout(2000);
-
-    if (await goToCart.count()) {
-
-      await goToCart.click();
-
-    } else {
-
-      await this.page
-        .locator(selectors.button.cartIcon)
-        .click();
-    }
-
-    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.locator(selectors.cart.openButton).click();
   }
 
-  // Verify total items in cart
-  async verifyCart(expectedCount) {
-
-    const text = await this.page
-      .locator(selectors.text.itemCount)
-      .textContent();
-
-    const actualCount = parseInt(
-      text.match(/\d+/)?.[0] || '0'
+  async verifyProductInCart(productName) {
+    await expect(this.page.locator(selectors.cart.productName)).toContainText(
+      productName,
     );
-
-    console.log(`Expected Cart Count: ${expectedCount}`);
-    console.log(`Actual Cart Count: ${actualCount}`);
-
-    expect(actualCount).toBe(expectedCount);
   }
 
-  // Delete item using index
-  async deleteProduct(index) {
-
-    const deleteButtons = this.page.locator(
-      selectors.button.delete
-    );
-
-    const count = await deleteButtons.count();
-
-    if (index >= count) {
-
-      throw new Error(
-        `Delete index ${index} out of range. Total items: ${count}`
-      );
-    }
-
-    // human-like pause before delete
-    await this.page.waitForTimeout(2000);
-
-    await deleteButtons
-      .nth(index)
-      .click();
-
-    // wait for cart refresh
-    await this.page.waitForLoadState('domcontentloaded');
+  async proceedCheckout() {
+    await this.page.locator(selectors.cart.checkoutButton).click();
   }
 
-  // Get all product names from cart
-  async getCartItems() {
-
-    const titles = this.page.locator(
-      selectors.text.productTitle
-    );
-
-    const count = await titles.count();
-    const items = [];
-    for (let i = 0; i < count; i++) {
-
-      const text = await titles
-        .nth(i)
-        .innerText();
-
-      items.push(text.trim());
-    }
-
-    return items;
+  async continueCheckout() {
+    await this.page.locator(selectors.cart.continueButton).click();
   }
 
-  // Verify specific product is present in cart
-  async verifyProductPresent(productData) {
+  async removeProduct(productName) {
+    const productRow = this.page.locator(selectors.cart.productRow).filter({
+      has: this.page.locator(
+        selectors.cart.productName,
 
-  const titles = await this.page
-    .locator(selectors.text.productTitle)
-    .allTextContents();
+        {
+          hasText: productName,
+        },
+      ),
+    });
 
-  const prices = await this.page
-    .locator(selectors.text.productPrice)
-    .allTextContents();
+    await productRow.locator(selectors.cart.removeButton).click();
+  }
 
-  const cleanedTitles = titles.map(t => t.trim());
-  const cleanedPrices = prices.map(p =>
-    p.replace(/[^\d.]/g, '').trim()
-  );
-
-  expect(
-    cleanedTitles.some(title =>
-      title.includes(productData.name.substring(0, 20))
-    )
-  ).toBeTruthy();
-
-  expect(
-    cleanedPrices.some(price =>
-      price.includes(productData.price.replace(/[^\d.]/g, ''))
-    )
-  ).toBeTruthy();
-}
-
-  // Verify cart empty
   async verifyCartEmpty() {
+    await expect(
+      this.page.locator(selectors.cart.emptyCartMessage),
+    ).toContainText("There are no items in your cart.");
+  }
 
-    const text = await this.page
-      .locator(selectors.text.itemCount)
-      .textContent();
+  async getCartItemCount() {
+    return await this.page.locator(selectors.cart.productName).count();
+  }
 
-    const count = parseInt(
-      text.match(/\d+/)?.[0] || '0'
-    );
-
-    expect(count).toBe(0);
+  async verifyDeleteToast() {
+    await expect(
+      this.page.locator(selectors.cart.deleteToast).filter({
+        hasText: "Product deleted.",
+      }),
+    ).toBeVisible();
   }
 }
 
