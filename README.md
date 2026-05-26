@@ -1,77 +1,135 @@
-# PlaywrightAutomationFramework
+# Playwright Hybrid Automation Framework
 
-[![Playwright Automation](https://github.com/TryHardPranjal/Playwright-Hybrid-Automation-Framework/actions/workflows/playwright.yml/badge.svg)](https://github.com/TryHardPranjal/Playwright-Hybrid-Automation-Framework/actions/workflows/playwright.yml)
+<div align="center">
 
-A production-style hybrid automation framework built with **Playwright** and **JavaScript** for:
+# Playwright Hybrid Automation Framework
 
-- UI automation
-- API automation
-- API mocking and interception
-- Page Object Model (POM)
-- CI/CD execution through GitHub Actions
-- Allure reporting
+A production-grade **Hybrid Test Automation Framework** built using **Playwright + JavaScript (ES Modules)** for scalable **UI**, **API**, and **Hybrid automation testing** with modern CI/CD practices.
+
+Designed with enterprise-level framework principles including **Page Object Model (POM)**, **Service Layer Architecture**, **Environment Configuration**, **API Mocking**, **Reusable Fixtures**, and **GitHub Actions CI/CD**.
+
+<br>
+
+[![Playwright Tests](https://github.com/TryHardPranjal/Playwright-Hybrid-Automation-Framework/actions/workflows/playwright.yml/badge.svg)](https://github.com/TryHardPranjal/Playwright-Hybrid-Automation-Framework/actions/workflows/playwright.yml)
+
+![Playwright](https://img.shields.io/badge/Playwright-Automation-green)
+
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow)
+
+![NodeJS](https://img.shields.io/badge/Node.js-Runtime-brightgreen)
+
+![Allure](https://img.shields.io/badge/Allure-Reporting-orange)
+
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI/CD-blue)
+
+![License](https://img.shields.io/badge/License-ISC-red)
+
+![Status](https://img.shields.io/badge/Status-Active-success)
+
+</div>
 
 ---
 
-## Contents
+## Framework Capabilities
 
-- Overview
-- Features
-- Tech stack
-- Project structure
-- Prerequisites
-- Setup
-- Environment variables
-- Running tests
-- Reporting
-- CI/CD
-- Test design
-- Adding new tests
-- Troubleshooting
-- License
+✔ UI Automation Testing  
+✔ API Automation Testing  
+✔ Hybrid UI + API Validation  
+✔ Request Interception & Mocking  
+✔ Page Object Model (POM)  
+✔ Service Layer Architecture  
+✔ Fixture-based Dependency Injection  
+✔ Environment-Based Execution  
+✔ Parallel Cross-browser Execution  
+✔ GitHub Actions CI/CD Integration  
+✔ Allure Reporting & GitHub Pages Hosting  
+
+---
+
+## Live Report
+
+Live Allure Report:
+
+https://tryhardpranjal.github.io/Playwright-Hybrid-Automation-Framework/
+
+---
+
+## Why This Framework?
+
+This project is designed to simulate a **real-world enterprise automation framework** rather than a simple test repository.
+
+The framework demonstrates:
+
+- Scalable automation architecture
+- Separation of concerns
+- Reusable and maintainable code structure
+- Professional CI/CD practices
+- Hybrid testing techniques
+- Debugging and reporting strategies
+- Portfolio-ready implementation for SDET/QA roles
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
+- [Project Structure](#project-structure)
+- [Prerequisites](#prerequisites)
+- [Setup](#setup)
+- [Configuration](#configuration)
+- [Running Tests](#running-tests)
+- [Reporting](#reporting)
+- [CI/CD Workflow](#cicd-workflow)
+- [Authentication Strategy](#authentication-strategy)
+- [Design Principles](#design-principles)
+- [Adding New Tests](#adding-new-tests)
+- [Troubleshooting](#troubleshooting)
+- [Project Summary](#project-summary)
+- [License](#license)
 
 ---
 
 ## Overview
 
-This framework covers both UI and API testing in a clean, maintainable structure.
+This framework is designed to demonstrate real-world automation skills across UI, API, and hybrid testing.
 
-### UI automation
-The UI part of the framework automates Amazon flows such as:
+It currently covers:
 
-- search
-- product details
-- cart
-- address
-- wishlist
+- user login and authentication flows
+- product search, sorting, filtering, and product details validation
+- cart, checkout, and cart removal flows
+- API CRUD operations using MockAPI
+- API response validation with ReqRes
+- request interception and response mocking
+- cross-browser execution
+- environment-based execution
+- Allure reporting and hosted test reports
 
-### API automation
-The API part of the framework covers:
-
-- GET, POST, PUT, PATCH, DELETE
-- valid and invalid response validation
-- request and response handling
-- authentication token reuse
-- reusable API utilities
-- sequential CRUD flows
-- response mocking and interception
+The framework is structured to be readable, reusable, and easy to extend.
 
 ---
 
-## Features
+## Key Features
 
-- Page Object Model implementation for UI tests
-- Separate `tests/ui/` and `tests/api/` structure
-- Reusable API client abstraction
-- Centralized auth helper for token management
-- JSON-based test payloads
-- Valid and negative API testing
-- Mocked API response validation
-- Screenshots, videos, and traces on failure
-- HTML and Allure reporting
-- GitHub Actions CI/CD integration
-- GitHub Pages deployment for Allure report
-- Environment-based configuration using `.env`
+- Page Object Model for UI pages
+- Service layer for reusable business flows
+- Centralized selectors in each page object
+- Fixture-based dependency injection
+- Reusable API client and auth helper
+- Dynamic test data generation
+- Environment switching through `config/environments/`
+- Local and CI-friendly authentication strategy
+- Cross-browser support: Chromium, Firefox, WebKit
+- Parallel execution support
+- Playwright HTML report
+- Allure report generation
+- Allure hosted on GitHub Pages
+- Debug artifacts on failure
+- Manual workflow dispatch with browser and suite selection
+- GitHub Actions caching for Node and Playwright browsers
 
 ---
 
@@ -79,19 +137,45 @@ The API part of the framework covers:
 
 | Tool | Purpose |
 |---|---|
-| Playwright | UI and API automation |
-| JavaScript (ES Modules) | Test and framework code |
+| Playwright | UI, API, and hybrid automation |
+| JavaScript (ES Modules) | Framework and test code |
 | Node.js | Runtime |
-| dotenv | Environment variable handling |
-| Allure | Reporting |
+| dotenv | Environment configuration |
+| Allure | Test reporting |
 | GitHub Actions | CI/CD |
+| GitHub Pages | Hosted Allure report |
+
+---
+
+## Architecture
+
+The framework follows a layered design:
+
+```text
+Tests
+↓
+Services
+↓
+Pages
+↓
+Playwright
+```
+
+### What Each Layer Does
+
+- **Tests**: contain scenario flow and assertions
+- **Services**: contain reusable business operations
+- **Pages**: contain locators and page-level actions
+- **Utils**: contain logging, random data, retry, and helper utilities
+- **Config**: manages environments, URLs, and environment loading
+- **API Utils**: manage reusable request/response handling
 
 ---
 
 ## Project Structure
 
 ```text
-PlaywrightAutomationFramework/
+Playwright-Hybrid-Automation-Framework/
 ├── .github/
 │   └── workflows/
 │       └── playwright.yml
@@ -99,135 +183,238 @@ PlaywrightAutomationFramework/
 │   ├── apiClient.js
 │   └── authHelper.js
 ├── config/
-│   └── env.js
+│   ├── env.js
+│   ├── loadEnv.js
+│   └── environments/
+│       ├── dev.env
+│       ├── qa.env
+│       ├── stage.env
+│       └── prod.env
+├── fixtures/
+│   └── baseFixture.js
 ├── pages/
-│   ├── AmazonHomePage.js
-│   ├── AmazonLoginPage.js
-│   ├── AccountPage.js
-│   ├── AddressPage.js
 │   ├── CartPage.js
-│   ├── ProductDetailsPage.js
-│   ├── SearchResultsPage.js
-│   └── WishlistPage.js
-├── payloads/│   
+│   ├── LoginPage.js
+│   └── ProductsPage.js
+├── payloads/
 │   └── mockApiUserPayload.json
-├── screenshots/
+├── services/
+│   ├── AuthService.js
+│   ├── CartService.js
+│   └── ProductService.js
 ├── test-data/
-│   └── addressData.json
+│   └── products.json
 ├── tests/
-│   ├── ui/
-│   └── api/
-├── playwright.config.js
+│   ├── api/
+│   │   ├── TC_API_01_E2E_Flow.api.spec.js
+│   │   ├── TC_API_02_EndpointValidation.api.spec.js
+│   │   ├── TC_API_03_InterceptMockResponse.api.spec.js
+│   │   └── TC_API_04_AuthenticatedUser.api.spec.js
+│   ├── hybrid/
+│   │   ├── TC_01_CreateUserAPIValidateUI.hybrid.spec.js
+│   │   └── TC_02_AddToCartNetworkValidation.hybrid.spec.js
+│   └── ui/
+│       ├── TC_01_Login.ui.spec.js
+│       ├── TC_02_Cart.ui.spec.js
+│       ├── TC_03_Checkout.ui.spec.js
+│       ├── TC_04_ProductSearch.ui.spec.js
+│       ├── TC_05_ProductFilter.ui.spec.js
+│       ├── TC_06_ProductDetails.ui.spec.js
+│       ├── TC_07_RemoveCartItem.ui.spec.js
+│       ├── TC_08_InvalidLogin.ui.spec.js
+│       ├── TC_09_SortProducts.ui.spec.js
+│       └── TC_10_EmptySearch.ui.spec.js
+├── utils/
+│   ├── DateHelper.js
+│   ├── FileHelper.js
+│   ├── Logger.js
+│   ├── RandomData.js
+│   ├── RetryHelper.js
+│   └── WaitHelper.js
+├── .env
+├── .gitignore
+├── global.setup.js
+├── jsconfig.json
+├── package-lock.json
 ├── package.json
-└── README.md
+├── playwright.config.js
+├── README.md
+└── tree.ps1
+```
+
+### Generated at Runtime
+
+These folders and files are created during test runs and should not be committed:
+
+```text
+.auth/
+allure-results/
+allure-report/
+playwright-report/
+test-results/
+setup-page.png
+```
+
+---
 
 ## Prerequisites
 
 - Node.js 18 or later
 - npm
-
-Optional, but recommended for local report generation:
-
-- Java 21 for Allure CLI
-- GitHub account for CI/CD execution
+- Git
+- Optional: Java 21 for local Allure CLI usage
 
 ---
 
 ## Setup
 
-Clone the repository:
+### Clone the Repository
 
 ```bash
-git clone https://github.com/mfsipranjalsinha/PlaywrightAutomationFramework.git
-cd PlaywrightAutomationFramework
+git clone https://github.com/TryHardPranjal/Playwright-Hybrid-Automation-Framework.git
+cd Playwright-Hybrid-Automation-Framework
 ```
 
-Install dependencies:
+### Install Dependencies
 
 ```bash
 npm ci
 ```
 
-Install Playwright browsers:
+### Install Playwright Browsers
 
 ```bash
 npx playwright install --with-deps
 ```
 
----
+If you only want the supported browsers:
 
-## Environment Variables
-
-Create a `.env` file in the project root:
-
-```env
-EMAIL='your_email_here'
-PASSWORD='your_password_here'
-REQRES_API_KEY='your_reqres_api_key'
-MOCKAPI_BASE_URL='your_mockapi_base_url'
+```bash
+npx playwright install chromium firefox webkit
 ```
 
-### Purpose of each variable
+---
 
-- `EMAIL` and `PASSWORD` are used for Amazon login flows
-- `REQRES_API_KEY` is used for ReqRes API requests
-- `MOCKAPI_BASE_URL` is used for MockAPI CRUD validation
+## Configuration
+
+### Local `.env`
+
+Create a `.env` file in the project root.
+
+Example:
+
+```env
+REQRES_API_KEY=your_reqres_api_key
+REQRES_EMAIL=eve.holt@reqres.in
+REQRES_PASSWORD=cityslicka
+MOCKAPI_BASE_URL=https://6a02e16f0d92f63dd25460eb.mockapi.io
+PST_EMAIL=your_practice_testing_email
+PST_PASSWORD=your_practice_testing_password
+```
+
+### Environment Files
+
+The framework supports environment-based configuration through:
+
+- `config/environments/dev.env`
+- `config/environments/qa.env`
+- `config/environments/stage.env`
+- `config/environments/prod.env`
+
+These are selected using `TEST_ENV`.
+
+### GitHub Actions Configuration
+
+Use Repository Variables for non-sensitive URLs:
+
+- `WEB_URL`
+- `API_URL`
+- `MOCKAPI_BASE_URL`
+
+Use Repository Secrets for credentials and tokens:
+
+- `REQRES_API_KEY`
+- `REQRES_EMAIL`
+- `REQRES_PASSWORD`
+- `PST_EMAIL`
+- `PST_PASSWORD`
 
 ---
 
 ## Running Tests
 
-### Run the full framework
+### Full Suite
 
 ```bash
 npm run test
 ```
 
-### Run UI tests only
+### UI Only
 
 ```bash
 npm run test:ui
 ```
 
-### Run API tests only
+### API Only
 
 ```bash
 npm run test:api
 ```
 
-### Run smoke tests
+### Smoke Suite
 
 ```bash
 npm run test:smoke
 ```
 
-### Run regression tests
+### Regression Suite
 
 ```bash
 npm run test:regression
 ```
 
-### Run sanity tests
+### Sanity Suite
 
 ```bash
 npm run test:sanity
 ```
 
-### Run E2E-tagged tests
+### E2E Suite
 
 ```bash
 npm run test:e2e
+```
+
+### Browser-Specific Runs
+
+```bash
+npm run test:chrome
+npm run test:firefox
+npm run test:safari
+npm run test:crossbrowser
+```
+
+### Hybrid Tests Only
+
+```bash
+npm run test:hybrid
+```
+
+### Environment-Specific Runs
+
+```bash
+npm run test:dev
+npm run test:qa
+npm run test:stage
 ```
 
 ---
 
 ## Reporting
 
-### HTML Report
+### Playwright HTML Report
 
-Playwright generates an HTML report automatically after execution.
-
-To open it locally:
+After any run:
 
 ```bash
 npx playwright show-report
@@ -235,170 +422,180 @@ npx playwright show-report
 
 ### Allure Report
 
-Generate Allure results:
+Generate:
 
 ```bash
 npm run allure:generate
 ```
 
-Open the Allure report:
+Open locally:
 
 ```bash
 npm run allure:open
 ```
 
-If needed, Allure can also be launched directly with:
+### Hosted Allure Report
 
-```bash
-npx allure open
-```
+The latest report is published automatically via GitHub Pages:
 
----
+**Live Allure Report**
 
-## Hosted Allure Report
+The hosted report is used to review:
 
-The latest Allure report is automatically deployed using GitHub Pages after a successful CI/CD run.
-
-Live report:
-
-https://tryhardpranjal.github.io/Playwright-Hybrid-Automation-Framework/#
-
-The hosted report includes:
-
-- execution summary
-- passed and failed test details
-- screenshots on failure
-- traces and debugging artifacts
-- execution history
-- API and UI execution results
-
-This makes the latest execution easy to share with clients, recruiters, and reviewers without running the framework locally.
+- pass/fail summary
+- test history
+- failure screenshots and traces
+- API request/response details
+- execution trends
+- CI/CD results
 
 ---
 
-## CI/CD
+## CI/CD Workflow
 
-This repository includes a GitHub Actions workflow at:
+The GitHub Actions workflow is located at:
 
 ```text
 .github/workflows/playwright.yml
 ```
 
-### CI workflow includes
+### Workflow Highlights
 
-- repository checkout
-- Node.js setup
-- Java setup for Allure
-- dependency installation
-- Playwright browser installation
-- automated test execution
-- Allure report generation
-- artifact upload
-- GitHub Pages deployment for report sharing
+- runs on push to `main`
+- supports manual execution via `workflow_dispatch`
+- allows environment selection
+- allows browser selection for manual runs
+- caches npm dependencies
+- caches Playwright browsers
+- runs Chromium UI + hybrid tests on push
+- runs API tests on push
+- uploads Playwright artifacts
+- generates Allure report even when tests fail
+- publishes Allure report to GitHub Pages
 
-The badge at the top of this README reflects the workflow status.
+### Manual Workflow Inputs
 
----
+When starting the workflow manually, you can choose:
 
-## Test Design
-
-### UI tests
-
-UI tests follow the Page Object Model approach:
-
-- keep locators inside page classes
-- keep assertions in test files
-- reuse methods across specs
-- reduce duplication
-
-### API tests
-
-API tests are structured to cover:
-
-- request creation
-- response parsing
-- response validation
-- positive and negative cases
-- CRUD flows
-- reusable API client usage
-- auth handling
-- mocking and interception
+- `environment`: `dev`, `qa`, `stage`, `prod`
+- `suite`: `all`, `smoke`, `api`, `regression`, `e2e`
+- `browser`: `chromium`, `firefox`, `webkit`, `crossbrowser`
 
 ---
 
-## API Coverage Included
+## Authentication Strategy
 
-### ReqRes API
+This framework uses a stable authentication approach for the public demo site.
 
-Used for API fundamentals and response validation:
+### How It Works
 
-- GET users
-- POST create user
-- PUT update user
-- PATCH partial update
-- invalid login handling
-- auth token reuse patterns
+- API login is used to generate auth data
+- auth data is stored in `.auth/user.json`
+- browser tests reuse this storage state
+- this keeps tests stable across local runs and CI
 
-### MockAPI
+### Why This Approach
 
-Used for real CRUD persistence validation:
+The public demo application can be affected by browser protection, rate limits, or account resets. Using API-auth-backed storage state is more reliable than depending on repeated UI logins for every run.
 
-- create user
-- fetch created user
-- update user
-- delete user
-- verify deletion
+---
 
-### Mocking and Interception
+## Design Principles
 
-A Playwright interception example is included using:
+This framework follows a few core principles:
 
-- `page.route()`
-- `route.fetch()`
-- `route.fulfill()`
-
-This demonstrates frontend testing with mocked backend responses.
+- one responsibility per page object
+- reusable business actions in services
+- centralized locators inside pages
+- dynamic data instead of hardcoded values
+- strong separation of UI, API, and hybrid tests
+- local and CI-friendly execution
+- readable logging for debugging
 
 ---
 
 ## Adding New Tests
 
-### UI test example
+### UI Test
 
-Place new UI specs under:
+Add a new spec under:
 
 ```text
 tests/ui/
 ```
 
-### API test example
+Use the existing page and service layer instead of placing locators directly in the spec.
 
-Place new API specs under:
+### API Test
+
+Add a new spec under:
 
 ```text
 tests/api/
 ```
 
-Use descriptive file names such as:
+Use the reusable API client and auth helper where applicable.
+
+### Hybrid Test
+
+Add a new spec under:
 
 ```text
-TC_01_Search.ui.spec.js
-TC_02_CreateUser.api.spec.js
+tests/hybrid/
 ```
 
-Keep each test focused on one business behavior.
+Use hybrid tests when a UI action must be validated with network-level assertions.
 
 ---
 
-## Contributing
+## Troubleshooting
 
-This repository is structured to stay clean and readable.
+### Browser Installation Issues
 
-When adding tests:
+Reinstall browsers:
 
-- keep page objects focused
-- avoid repeating locators
-- use reusable API utilities
-- keep test data in JSON files
-- use tags for grouping
-- keep CI-safe execution in mind
+```bash
+npx playwright install chromium firefox webkit
+```
+
+### Clear Generated Artifacts
+
+```bash
+npm run clean
+```
+
+### Open Last HTML Report
+
+```bash
+npx playwright show-report
+```
+
+### Common CI Issues
+
+- missing GitHub Secrets or Variables
+- wrong environment selection
+- stale auth state
+- browser-specific timing differences
+- API rate limits or account resets on public demo apps
+
+---
+
+## Project Summary
+
+This framework demonstrates:
+
+- UI automation using Playwright and POM
+- API testing with reusable helpers
+- hybrid flows that validate backend behavior from UI actions
+- dynamic data generation
+- environment-aware execution
+- browser compatibility
+- parallel execution
+- GitHub Actions CI/CD
+- Allure report hosting on GitHub Pages
+
+---
+
+## License
+
+ISC
