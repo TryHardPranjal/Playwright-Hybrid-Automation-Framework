@@ -118,69 +118,92 @@ jobs:
         run: npx playwright install --with-deps
 
 
-      - name: Run Tests
+      - name: Validate Environment Variables
+
         shell: bash
-      
+
         run: |
-      
+
+          echo "Checking required environment variables..."
+
+          [ -z "$WEB_URL" ] && echo "WEB_URL missing" && exit 1
+          [ -z "$API_URL" ] && echo "API_URL missing" && exit 1
+          [ -z "$MOCKAPI_BASE_URL" ] && echo "MOCKAPI_BASE_URL missing" && exit 1
+          [ -z "$PST_EMAIL" ] && echo "PST_EMAIL missing" && exit 1
+          [ -z "$PST_PASSWORD" ] && echo "PST_PASSWORD missing" && exit 1
+
+          echo "Environment validation passed"
+
+
+      - name: Run Tests
+
+        shell: bash
+
+        run: |
+
           EXIT_CODE=0
-      
+
           npm run clean
-      
+
           if [[ "${{ github.event_name }}" == "push" || "${{ github.event_name }}" == "pull_request" ]]; then
-      
-            echo "Running Chromium UI + Hybrid"
-      
-            npx playwright test --project=chromium || EXIT_CODE=1
-      
-            echo "Running API Tests"
-      
-            npx playwright test --project=api || EXIT_CODE=1
-      
-          else
-      
-            if [[ "$TEST_SUITE" == "api" ]]; then
-      
+
+              echo "Running Chromium UI + Hybrid Tests"
+
+              npx playwright test --project=chromium || EXIT_CODE=1
+
+              echo "Running API Tests"
+
               npx playwright test --project=api || EXIT_CODE=1
-      
-            elif [[ "$BROWSER" == "crossbrowser" ]]; then
-      
-              if [[ "$TEST_SUITE" == "all" ]]; then
-      
-                npx playwright test \
-                --project=chromium \
-                --project=firefox \
-                --project=webkit || EXIT_CODE=1
-      
+
+          else
+
+              if [[ "$TEST_SUITE" == "api" ]]; then
+
+                  echo "Running API Suite"
+
+                  npx playwright test \
+                  --project=api || EXIT_CODE=1
+
+
+              elif [[ "$BROWSER" == "crossbrowser" ]]; then
+
+                  if [[ "$TEST_SUITE" == "all" ]]; then
+
+                      npx playwright test \
+                      --project=chromium \
+                      --project=firefox \
+                      --project=webkit || EXIT_CODE=1
+
+                  else
+
+                      npx playwright test \
+                      --project=chromium \
+                      --project=firefox \
+                      --project=webkit \
+                      --grep "@$TEST_SUITE" || EXIT_CODE=1
+
+                  fi
+
+
               else
-      
-                npx playwright test \
-                --project=chromium \
-                --project=firefox \
-                --project=webkit \
-                --grep "@$TEST_SUITE" || EXIT_CODE=1
-      
+
+                  if [[ "$TEST_SUITE" == "all" ]]; then
+
+                      npx playwright test \
+                      --project=$BROWSER || EXIT_CODE=1
+
+                  else
+
+                      npx playwright test \
+                      --project=$BROWSER \
+                      --grep "@$TEST_SUITE" || EXIT_CODE=1
+
+                  fi
+
               fi
-      
-            else
-      
-              if [[ "$TEST_SUITE" == "all" ]]; then
-      
-                npx playwright test \
-                --project=$BROWSER || EXIT_CODE=1
-      
-              else
-      
-                npx playwright test \
-                --project=$BROWSER \
-                --grep "@$TEST_SUITE" || EXIT_CODE=1
-      
-              fi
-      
-            fi
-      
+
           fi
-      
+
           exit $EXIT_CODE
 
 
@@ -203,13 +226,27 @@ jobs:
 
         if: always()
 
+        shell: bash
+
         run: |
 
-          if [ -d "allure-results" ]; then
+          if [ -d "allure-results" ] && [ "$(ls -A allure-results)" ]; then
+
               npm run allure:generate
+
           else
+
               mkdir -p allure-report
-              echo "<h1>No Results Generated</h1>" > allure-report/index.html
+
+              cat > allure-report/index.html <<EOF
+              <html>
+              <body>
+                  <h1>No test results generated</h1>
+                  <p>Execution stopped before tests produced results.</p>
+              </body>
+              </html>
+              EOF
+
           fi
 
 
@@ -241,25 +278,24 @@ jobs:
 
       - name: Setup GitHub Pages
 
-        if: always()
+        if: always() && github.ref == 'refs/heads/main'
 
         uses: actions/configure-pages@v5
 
 
       - name: Upload Pages Artifact
 
-        if: always()
+        if: always() && github.ref == 'refs/heads/main'
 
         uses: actions/upload-pages-artifact@v3
 
         with:
-
           path: allure-report/
 
 
       - name: Deploy Allure Report
 
-        if: always()
+        if: always() && github.ref == 'refs/heads/main'
 
         id: deployment
 
