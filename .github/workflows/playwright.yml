@@ -119,7 +119,6 @@ jobs:
 
 
       - name: Run Tests
-
         shell: bash
       
         run: |
@@ -128,7 +127,7 @@ jobs:
       
           npm run clean
       
-          if [ "${{ github.event_name }}" = "push" ]; then
+          if [[ "${{ github.event_name }}" == "push" || "${{ github.event_name }}" == "pull_request" ]]; then
       
             echo "Running Chromium UI + Hybrid"
       
@@ -140,27 +139,43 @@ jobs:
       
           else
       
-            if [ "$BROWSER" = "crossbrowser" ]; then
+            if [[ "$TEST_SUITE" == "api" ]]; then
+      
+              npx playwright test --project=api || EXIT_CODE=1
+      
+            elif [[ "$BROWSER" == "crossbrowser" ]]; then
+      
+              if [[ "$TEST_SUITE" == "all" ]]; then
       
                 npx playwright test \
                 --project=chromium \
                 --project=firefox \
                 --project=webkit || EXIT_CODE=1
       
+              else
+      
+                npx playwright test \
+                --project=chromium \
+                --project=firefox \
+                --project=webkit \
+                --grep "@$TEST_SUITE" || EXIT_CODE=1
+      
+              fi
+      
             else
       
-                if [ "$TEST_SUITE" = "all" ]; then
+              if [[ "$TEST_SUITE" == "all" ]]; then
       
-                    npx playwright test \
-                    --project=$BROWSER || EXIT_CODE=1
+                npx playwright test \
+                --project=$BROWSER || EXIT_CODE=1
       
-                else
+              else
       
-                    npx playwright test \
-                    --project=$BROWSER \
-                    --grep @$TEST_SUITE || EXIT_CODE=1
+                npx playwright test \
+                --project=$BROWSER \
+                --grep "@$TEST_SUITE" || EXIT_CODE=1
       
-                fi
+              fi
       
             fi
       

@@ -5,7 +5,7 @@ import { defineConfig, devices } from "@playwright/test";
 
 import { ENV } from "./config/env.js";
 import "./config/loadEnv.js";
-storageState: "./.auth/user.json"
+
 
 export default defineConfig({
   globalSetup: "./global.setup.js",
