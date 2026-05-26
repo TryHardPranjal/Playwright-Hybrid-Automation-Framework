@@ -19,7 +19,7 @@ async function globalSetup() {
     },
   );
 
-  await page.locator('[data-test="email"]').toBeVisible({
+  await expect(page.locator('[data-test="email"]')).toBeVisible({
     timeout: 30000,
   });
 
