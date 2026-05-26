@@ -43,16 +43,27 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    timeout-minutes: 30
+
     env:
       TEST_ENV: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.test_env || 'dev' }}
+
       TEST_SUITE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.test_suite || 'all' }}
+
       WEB_URL: ${{ vars.WEB_URL }}
+
       API_URL: ${{ vars.API_URL }}
+
       MOCKAPI_BASE_URL: ${{ vars.MOCKAPI_BASE_URL }}
+
       REQRES_API_KEY: ${{ secrets.REQRES_API_KEY }}
+
       REQRES_EMAIL: ${{ secrets.REQRES_EMAIL }}
+
       REQRES_PASSWORD: ${{ secrets.REQRES_PASSWORD }}
+
       PST_EMAIL: ${{ secrets.PST_EMAIL }}
+
       PST_PASSWORD: ${{ secrets.PST_PASSWORD }}
 
     steps:
@@ -61,15 +72,20 @@ jobs:
 
       - name: Setup Node
         uses: actions/setup-node@v4
+
         with:
           node-version: 22
+
           cache: npm
 
       - name: Cache Playwright Browsers
         uses: actions/cache@v4
+
         with:
           path: ~/.cache/ms-playwright
+
           key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
           restore-keys: |
             playwright-${{ runner.os }}
 
@@ -80,13 +96,30 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run selected tests
+
         shell: bash
+
         run: |
+
           if [ "$TEST_SUITE" = "all" ]; then
             npm run test
           else
             npm run "test:${TEST_SUITE}"
           fi
+
+      - name: Upload Debug Files
+
+        if: always()
+
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: debug-files
+
+          path: |
+            setup-page.png
+            playwright-report/**
+            test-results/**
 
       - name: Generate Allure Report
 
@@ -102,33 +135,48 @@ jobs:
           fi
 
       - name: Upload Playwright Report
+
         if: always()
+
         uses: actions/upload-artifact@v4
+
         with:
           name: playwright-report
+
           path: playwright-report
 
       - name: Upload Allure Report Artifact
+
         if: always()
+
         uses: actions/upload-artifact@v4
+
         with:
           name: allure-report
+
           path: allure-report
 
   deploy-pages:
     needs: test
-    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+
     runs-on: ubuntu-latest
+
+    timeout-minutes: 10
 
     environment:
       name: github-pages
+
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Download Allure Report Artifact
         uses: actions/download-artifact@v4
+
         with:
           name: allure-report
+
           path: .
 
       - name: Setup GitHub Pages
@@ -136,9 +184,12 @@ jobs:
 
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
+
         with:
           path: allure-report
 
       - name: Deploy Allure Report
+
         id: deployment
+
         uses: actions/deploy-pages@v4
