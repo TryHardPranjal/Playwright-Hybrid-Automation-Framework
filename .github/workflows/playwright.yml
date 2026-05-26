@@ -118,7 +118,7 @@ jobs:
         run: npx playwright install --with-deps
 
 
-      - name: Run tests
+      - name: Run Tests
 
         shell: bash
 
@@ -175,29 +175,11 @@ jobs:
         run: |
 
           if [ -d "allure-results" ]; then
-
               npm run allure:generate
-
           else
-
-              mkdir allure-report
-
+              mkdir -p allure-report
               echo "<h1>No Results Generated</h1>" > allure-report/index.html
-
           fi
-
-
-      - name: Upload Playwright Report
-
-        if: always()
-
-        uses: actions/upload-artifact@v4
-
-        with:
-
-          name: playwright-report
-
-          path: playwright-report
 
 
       - name: Upload Allure Report
@@ -210,53 +192,43 @@ jobs:
 
           name: allure-report
 
-          path: allure-report
+          path: allure-report/
 
 
+      - name: Upload Playwright Report
 
-  deploy-pages:
+        if: always()
 
-    needs: test
-
-    if: always() && github.ref == 'refs/heads/main'
-
-    runs-on: ubuntu-latest
-
-    timeout-minutes: 10
-
-
-    environment:
-
-      name: github-pages
-
-      url: ${{ steps.deployment.outputs.page_url }}
-
-
-    steps:
-
-      - name: Download Allure Report
-        uses: actions/download-artifact@v4
+        uses: actions/upload-artifact@v4
 
         with:
 
-          name: allure-report
+          name: playwright-report
 
-          path: .
+          path: playwright-report/
 
 
-      - name: Setup Pages
+      - name: Setup GitHub Pages
+
+        if: always()
+
         uses: actions/configure-pages@v5
 
 
       - name: Upload Pages Artifact
+
+        if: always()
+
         uses: actions/upload-pages-artifact@v3
 
         with:
 
-          path: allure-report
+          path: allure-report/
 
 
-      - name: Deploy Pages
+      - name: Deploy Allure Report
+
+        if: always()
 
         id: deployment
 
