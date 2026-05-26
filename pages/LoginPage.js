@@ -32,8 +32,14 @@ class LoginPage {
   }
 
   async verifyLogin() {
-    await expect(this.page.locator(selectors.login.accountMenu)).toBeVisible();
-  }
+  await expect(
+    this.page.getByRole("menuitem", { name: "Sign in" })
+  ).toBeHidden();
+
+  await expect.poll(async () => {
+    return await this.page.evaluate(() => localStorage.getItem("auth-token"));
+  }).not.toBeNull();
+}
 
   async verifyLoginError() {
     await expect(this.page.locator(selectors.login.loginError)).toBeVisible();
