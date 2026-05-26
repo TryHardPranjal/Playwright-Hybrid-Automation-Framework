@@ -121,46 +121,46 @@ jobs:
       - name: Run Tests
 
         shell: bash
-      
+
         run: |
-      
+
           EXIT_CODE=0
-      
+
           if [ "${{ github.event_name }}" = "push" ]; then
-      
+
             echo "Running Chromium UI + Hybrid"
-      
+
             npm run test:chrome || EXIT_CODE=1
-      
+
             echo "Running API Tests"
-      
+
             npm run test:api || EXIT_CODE=1
-      
+
           else
-      
+
             if [ "$BROWSER" = "crossbrowser" ]; then
-      
+
               npm run test:crossbrowser || EXIT_CODE=1
-      
+
             else
-      
+
               if [ "$TEST_SUITE" = "all" ]; then
-      
+
                 npm run test:$BROWSER || EXIT_CODE=1
-      
+
               else
-      
+
                 playwright test \
                 --project=$BROWSER \
                 --grep @$TEST_SUITE || EXIT_CODE=1
-      
+
               fi
-      
+
             fi
-      
+
           fi
 
-    exit $EXIT_CODE
+          exit $EXIT_CODE
 
 
       - name: Upload Debug Files
