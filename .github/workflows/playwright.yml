@@ -89,8 +89,17 @@ jobs:
           fi
 
       - name: Generate Allure Report
+
         if: always()
-        run: npm run allure:generate
+
+        run: |
+
+          if [ -d "allure-results" ]; then
+            npm run allure:generate
+          else
+            mkdir allure-report
+            echo "<h1>No results generated</h1>" > allure-report/index.html
+          fi
 
       - name: Upload Playwright Report
         if: always()

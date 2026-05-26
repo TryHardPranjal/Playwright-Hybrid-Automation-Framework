@@ -1,16 +1,25 @@
 import { chromium, expect } from "@playwright/test";
+
 import { ENV } from "./config/env.js";
+
 import Logger from "./utils/Logger.js";
 
 async function globalSetup() {
   const browser = await chromium.launch({
     headless: true,
-    slowMo: 200,
   });
 
   const page = await browser.newPage();
 
-  await page.goto("https://practicesoftwaretesting.com/auth/login");
+  await page.goto(
+    `${process.env.WEB_URL}/auth/login`,
+
+    {
+      waitUntil: "networkidle",
+    },
+  );
+
+  await page.locator('[data-test="email"]').waitFor();
 
   await page.locator('[data-test="email"]').fill(ENV.practiceTesting.email);
 
@@ -28,7 +37,7 @@ async function globalSetup() {
     path: "./.auth/user.json",
   });
 
-  Logger.info("\nAuth state saved successfully");
+  Logger.info("Auth state saved successfully");
 
   await browser.close();
 }
