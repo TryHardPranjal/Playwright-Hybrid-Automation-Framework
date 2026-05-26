@@ -11,6 +11,7 @@ on:
 
   workflow_dispatch:
     inputs:
+
       test_env:
         description: Choose environment
         required: true
@@ -34,21 +35,39 @@ on:
           - regression
           - e2e
 
+      browser:
+        description: Choose browser
+        required: true
+        default: chromium
+        type: choice
+        options:
+          - chromium
+          - firefox
+          - webkit
+          - crossbrowser
+
+
 permissions:
   contents: read
   pages: write
   id-token: write
 
+
 jobs:
+
   test:
+
     runs-on: ubuntu-latest
 
     timeout-minutes: 30
 
     env:
+
       TEST_ENV: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.test_env || 'dev' }}
 
       TEST_SUITE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.test_suite || 'all' }}
+
+      BROWSER: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.browser || 'chromium' }}
 
       WEB_URL: ${{ vars.WEB_URL }}
 
@@ -66,46 +85,73 @@ jobs:
 
       PST_PASSWORD: ${{ secrets.PST_PASSWORD }}
 
+
     steps:
+
       - name: Checkout code
         uses: actions/checkout@v4
+
 
       - name: Setup Node
         uses: actions/setup-node@v4
 
         with:
           node-version: 22
-
           cache: npm
+
 
       - name: Cache Playwright Browsers
         uses: actions/cache@v4
 
         with:
           path: ~/.cache/ms-playwright
-
           key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-
           restore-keys: |
             playwright-${{ runner.os }}
+
 
       - name: Install dependencies
         run: npm ci
 
+
       - name: Install browsers
         run: npx playwright install --with-deps
 
-      - name: Run selected tests
+
+      - name: Run tests
 
         shell: bash
 
         run: |
 
-          if [ "$TEST_SUITE" = "all" ]; then
-            npm run test
+          if [ "${{ github.event_name }}" = "push" ]; then
+
+              npm run test:chrome
+
           else
-            npm run "test:${TEST_SUITE}"
+
+            if [ "$BROWSER" = "crossbrowser" ]; then
+
+                npm run test:crossbrowser
+
+            else
+
+                if [ "$TEST_SUITE" = "all" ]; then
+
+                    playwright test --project=$BROWSER
+
+                else
+
+                    playwright test \
+                    --project=$BROWSER \
+                    --grep @$TEST_SUITE
+
+                fi
+
+            fi
+
           fi
+
 
       - name: Upload Debug Files
 
@@ -114,11 +160,13 @@ jobs:
         uses: actions/upload-artifact@v4
 
         with:
+
           name: debug-files
 
           path: |
             playwright-report/**
             test-results/**
+
 
       - name: Generate Allure Report
 
@@ -127,11 +175,17 @@ jobs:
         run: |
 
           if [ -d "allure-results" ]; then
-            npm run allure:generate
+
+              npm run allure:generate
+
           else
-            mkdir allure-report
-            echo "<h1>No results generated</h1>" > allure-report/index.html
+
+              mkdir allure-report
+
+              echo "<h1>No Results Generated</h1>" > allure-report/index.html
+
           fi
+
 
       - name: Upload Playwright Report
 
@@ -140,54 +194,69 @@ jobs:
         uses: actions/upload-artifact@v4
 
         with:
+
           name: playwright-report
 
           path: playwright-report
 
-      - name: Upload Allure Report Artifact
+
+      - name: Upload Allure Report
 
         if: always()
 
         uses: actions/upload-artifact@v4
 
         with:
+
           name: allure-report
 
           path: allure-report
 
+
+
   deploy-pages:
+
     needs: test
 
-    if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: always() && github.ref == 'refs/heads/main'
 
     runs-on: ubuntu-latest
 
     timeout-minutes: 10
 
+
     environment:
+
       name: github-pages
 
       url: ${{ steps.deployment.outputs.page_url }}
 
+
     steps:
-      - name: Download Allure Report Artifact
+
+      - name: Download Allure Report
         uses: actions/download-artifact@v4
 
         with:
+
           name: allure-report
 
           path: .
 
-      - name: Setup GitHub Pages
+
+      - name: Setup Pages
         uses: actions/configure-pages@v5
+
 
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
 
         with:
+
           path: allure-report
 
-      - name: Deploy Allure Report
+
+      - name: Deploy Pages
 
         id: deployment
 
